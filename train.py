@@ -119,7 +119,18 @@ def train():
         if args.model == 'vgg':
             net.vgg.load_state_dict(base_weights)
         else:
-            net.resnet.load_state_dict(base_weights)
+	    new_base_weights = OrderedDict()
+            print("base weight len: ",len(base_weights))
+            if(len(base_weights)>=267):    #the pretrained model weith fc layer
+                i =0
+                for k,v in base_weights.items():
+                    if i < 265:
+                        i = i+1
+                        new_base_weights.update({k:v})
+            else:
+                new_base_weights = base_weights
+            #net.resnet.load_state_dict(base_weights)
+            net.resnet.load_state_dict(new_base_weights)
 
     if args.cuda:
         if args.multigpu:
